@@ -1,6 +1,10 @@
 package zencoder
 
 import (
+	"encoding/json"
+	"errors"
+	"io/ioutil"
+	"net/http"
 	"time"
 )
 
@@ -63,7 +67,6 @@ type CombinedUsage struct {
 	} `json:"statistics,omitempty"`
 }
 
-/*
 // Get VOD Usage
 func (z *Zencoder) GetVodUsage(settings *ReportSettings) (*VodUsage, error) {
 	resp, err := z.call("GET", "reports/vod", nil)
@@ -140,5 +143,3 @@ func (z *Zencoder) GetUsage(settings *ReportSettings) (*CombinedUsage, error) {
 
 	return &details, nil
 }
-
-*/
