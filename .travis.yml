@@ -10,4 +10,4 @@ install:
   - go build github.com/axw/gocov/gocov
   - go build github.com/mattn/goveralls
 
-script: goveralls 2aDqkKyVGr9Tl20GgyOACi607G6ZbpSMV
+script: $GOPATH/bin/goveralls 2aDqkKyVGr9Tl20GgyOACi607G6ZbpSMV
