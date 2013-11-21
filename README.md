@@ -1,4 +1,4 @@
 zencoder
 ========
 
-Golang interface for Zencoder API
+Go interface for Zencoder API - http://www.zencoder.com/
