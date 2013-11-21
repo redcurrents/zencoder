@@ -7,5 +7,7 @@ go:
 install:
   - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
+  - go build github.com/axw/gocov/gocov
+  - go build github.com/mattn/goveralls
 
 script: goveralls 2aDqkKyVGr9Tl20GgyOACi607G6ZbpSMV
