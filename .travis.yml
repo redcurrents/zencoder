@@ -1,5 +1,11 @@
 language: go
 
 go:
-    - 1.1
-    - tip
+  - 1.1
+  - tip
+
+install:
+  - go get github.com/axw/gocov/gocov
+  - go get github.com/mattn/goveralls
+
+script: goveralls 2aDqkKyVGr9Tl20GgyOACi607G6ZbpSMV
