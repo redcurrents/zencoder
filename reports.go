@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -67,9 +68,30 @@ type CombinedUsage struct {
 	} `json:"statistics,omitempty"`
 }
 
+func GetReportQuery(path string, settings *ReportSettings) string {
+	if settings != nil {
+		query := make(url.Values)
+		if settings.From != nil {
+			query.Set("from", settings.From.Format("2006-01-02"))
+		}
+		if settings.To != nil {
+			query.Set("to", settings.To.Format("2006-01-02"))
+		}
+		if settings.Grouping != nil {
+			query.Set("grouping", *settings.Grouping)
+		}
+
+		if len(query) > 0 {
+			return path + "?" + query.Encode()
+		}
+	}
+
+	return path
+}
+
 // Get VOD Usage
 func (z *Zencoder) GetVodUsage(settings *ReportSettings) (*VodUsage, error) {
-	resp, err := z.call("GET", "reports/vod", nil)
+	resp, err := z.call("GET", GetReportQuery("reports/vod", settings), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +117,7 @@ func (z *Zencoder) GetVodUsage(settings *ReportSettings) (*VodUsage, error) {
 
 // Get Live Usage
 func (z *Zencoder) GetLiveUsage(settings *ReportSettings) (*LiveUsage, error) {
-	resp, err := z.call("GET", "reports/live", nil)
+	resp, err := z.call("GET", GetReportQuery("reports/live", settings), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +142,7 @@ func (z *Zencoder) GetLiveUsage(settings *ReportSettings) (*LiveUsage, error) {
 }
 
 func (z *Zencoder) GetUsage(settings *ReportSettings) (*CombinedUsage, error) {
-	resp, err := z.call("GET", "reports/all", nil)
+	resp, err := z.call("GET", GetReportQuery("reports/all", settings), nil)
 	if err != nil {
 		return nil, err
 	}

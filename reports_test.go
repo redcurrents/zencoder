@@ -6,7 +6,54 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
+
+func TestGetReportQuery(t *testing.T) {
+	resp := zencoder.GetReportQuery("/path", nil)
+	if resp != "/path" {
+		t.Fatal("Expected /path, got", resp)
+	}
+
+	var settings zencoder.ReportSettings
+	resp = zencoder.GetReportQuery("/path", &settings)
+	if resp != "/path" {
+		t.Fatal("Expected /path, got", resp)
+	}
+
+	now := time.Date(2013, time.November, 22, 0, 0, 0, 0, time.UTC)
+
+	settings.From = &now
+	resp = zencoder.GetReportQuery("/path", &settings)
+	if resp != "/path?from=2013-11-22" {
+		t.Fatal("Expected /path?from=2013-11-22, got", resp)
+	}
+
+	settings.To = &now
+	resp = zencoder.GetReportQuery("/path", &settings)
+	if resp != "/path?from=2013-11-22&to=2013-11-22" {
+		t.Fatal("Expected /path?from=2013-11-22&to=2013-11-22, got", resp)
+	}
+
+	settings.From = nil
+	resp = zencoder.GetReportQuery("/path", &settings)
+	if resp != "/path?to=2013-11-22" {
+		t.Fatal("Expected /path?to=2013-11-22, got", resp)
+	}
+
+	grouping := "group by"
+	settings.Grouping = &grouping
+	resp = zencoder.GetReportQuery("/path", &settings)
+	if resp != "/path?grouping=group+by&to=2013-11-22" {
+		t.Fatal("Expected /path?grouping=group+by&to=2013-11-22, got", resp)
+	}
+
+	settings.To = nil
+	resp = zencoder.GetReportQuery("/path", &settings)
+	if resp != "/path?grouping=group+by" {
+		t.Fatal("Expected /path?grouping=group+by, got", resp)
+	}
+}
 
 func TestGetVodUsage(t *testing.T) {
 	expectedStatus := http.StatusOK
