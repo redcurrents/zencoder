@@ -1,13 +1,14 @@
 language: go
 
 go:
-  - 1.1
-  - tip
+- 1.1
 
 install:
-  - go get github.com/axw/gocov/gocov
-  - go get github.com/mattn/goveralls
-  - go build github.com/axw/gocov/gocov
-  - go build github.com/mattn/goveralls
+- go get github.com/axw/gocov/gocov
+- go get github.com/mattn/goveralls
 
-script: ../../../../bin/goveralls 2aDqkKyVGr9Tl20GgyOACi607G6ZbpSMV
+script: ../../../../bin/goveralls $GOVERALLS
+
+env:
+  global:
+    secure: FNiT1iwL+7PQwwZRwvnJGu7Wxy2sFv3b3AKecx41OoegGCTWL0R64ftrLvARuV85ZiMvT39NB8SZr7ojO9tcQeVeC6CpGuwuadBXp+kCvh1yUsZZvTI/f/I9LokT8xp/VQVJTZVasXZ/20C2lZkspyaFN36cHnPHIoLB6bKSO2w=
