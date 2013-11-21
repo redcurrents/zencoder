@@ -10,11 +10,16 @@ import (
 
 func TestCreateJob(t *testing.T) {
 	expectedStatus := http.StatusCreated
+	returnBody := true
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/jobs", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(expectedStatus)
 		if expectedStatus != http.StatusCreated {
+			return
+		}
+
+		if !returnBody {
 			return
 		}
 
@@ -33,7 +38,8 @@ func TestCreateJob(t *testing.T) {
 	zc := zencoder.NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
-	resp, err := zc.CreateJob()
+	var settings zencoder.EncodingSettings
+	resp, err := zc.CreateJob(&settings)
 	if err != nil {
 		t.Fatal("Expected no error", err)
 	}
@@ -55,7 +61,31 @@ func TestCreateJob(t *testing.T) {
 	}
 
 	expectedStatus = http.StatusInternalServerError
-	resp, err = zc.CreateJob()
+	resp, err = zc.CreateJob(&settings)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if resp != nil {
+		t.Fatal("Expected no response")
+	}
+
+	returnBody = false
+	expectedStatus = http.StatusOK
+
+	resp, err = zc.CreateJob(&settings)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if resp != nil {
+		t.Fatal("Expected no response")
+	}
+
+	returnBody = true
+	srv.Close()
+
+	resp, err = zc.CreateJob(&settings)
 	if err == nil {
 		t.Fatal("Expected error")
 	}
@@ -67,11 +97,16 @@ func TestCreateJob(t *testing.T) {
 
 func TestListJobs(t *testing.T) {
 	expectedStatus := http.StatusOK
+	returnBody := true
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/jobs.json", func(w http.ResponseWriter, r *http.Request) {
 		if expectedStatus != http.StatusOK {
 			w.WriteHeader(expectedStatus)
+			return
+		}
+
+		if !returnBody {
 			return
 		}
 
@@ -171,15 +206,42 @@ func TestListJobs(t *testing.T) {
 	if jobs != nil {
 		t.Fatal("Expected no response")
 	}
+
+	expectedStatus = http.StatusOK
+	returnBody = false
+	jobs, err = zc.ListJobs()
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if jobs != nil {
+		t.Fatal("Expected no response")
+	}
+
+	srv.Close()
+	returnBody = true
+	jobs, err = zc.ListJobs()
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if jobs != nil {
+		t.Fatal("Expected no response")
+	}
 }
 
 func TestGetJobDetails(t *testing.T) {
 	expectedStatus := http.StatusOK
+	returnBody := true
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/jobs/123.json", func(w http.ResponseWriter, r *http.Request) {
 		if expectedStatus != http.StatusOK {
 			w.WriteHeader(expectedStatus)
+			return
+		}
+
+		if !returnBody {
 			return
 		}
 
@@ -285,6 +347,28 @@ func TestGetJobDetails(t *testing.T) {
 	if details != nil {
 		t.Fatal("Expected no response")
 	}
+
+	expectedStatus = http.StatusOK
+	returnBody = false
+	details, err = zc.GetJobDetails(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if details != nil {
+		t.Fatal("Expected no response")
+	}
+
+	returnBody = false
+	srv.Close()
+	details, err = zc.GetJobDetails(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if details != nil {
+		t.Fatal("Expected no response")
+	}
 }
 
 func TestResubmitJob(t *testing.T) {
@@ -311,6 +395,14 @@ func TestResubmitJob(t *testing.T) {
 	if err == nil {
 		t.Fatal("Expected error")
 	}
+
+	expectedStatus = http.StatusOK
+	srv.Close()
+
+	err = zc.ResubmitJob(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
 }
 
 func TestCancelJob(t *testing.T) {
@@ -332,6 +424,14 @@ func TestCancelJob(t *testing.T) {
 	}
 
 	expectedStatus = http.StatusConflict
+
+	err = zc.CancelJob(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	expectedStatus = http.StatusOK
+	srv.Close()
 
 	err = zc.CancelJob(123)
 	if err == nil {
@@ -367,11 +467,16 @@ func TestFinishLiveJob(t *testing.T) {
 
 func TestGetJobProgress(t *testing.T) {
 	expectedStatus := http.StatusOK
+	returnBody := true
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/jobs/123/progress.json", func(w http.ResponseWriter, r *http.Request) {
 		if expectedStatus != http.StatusOK {
 			w.WriteHeader(expectedStatus)
+			return
+		}
+
+		if !returnBody {
 			return
 		}
 
@@ -416,6 +521,28 @@ func TestGetJobProgress(t *testing.T) {
 	}
 
 	expectedStatus = http.StatusNotFound
+	progress, err = zc.GetJobProgress(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if progress != nil {
+		t.Fatal("Expected no response", progress)
+	}
+
+	expectedStatus = http.StatusOK
+	returnBody = false
+	progress, err = zc.GetJobProgress(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if progress != nil {
+		t.Fatal("Expected no response", progress)
+	}
+
+	returnBody = true
+	srv.Close()
 	progress, err = zc.GetJobProgress(123)
 	if err == nil {
 		t.Fatal("Expected error")

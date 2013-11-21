@@ -39,6 +39,13 @@ func TestSetIntegrationMode(t *testing.T) {
 	if err == nil {
 		t.Fatal("Expected error")
 	}
+
+	srv.Close()
+	expectedStatus = http.StatusOK
+	err = zc.SetIntegrationMode()
+	if err == nil {
+		t.Fatal("Expected error")
+	}
 }
 
 func TestSetLiveMode(t *testing.T) {
@@ -66,6 +73,13 @@ func TestSetLiveMode(t *testing.T) {
 	}
 
 	expectedStatus = http.StatusInternalServerError
+	err = zc.SetLiveMode()
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	srv.Close()
+	expectedStatus = http.StatusOK
 	err = zc.SetLiveMode()
 	if err == nil {
 		t.Fatal("Expected error")
@@ -170,14 +184,31 @@ func TestCreateAccount(t *testing.T) {
 	if resp != nil {
 		t.Fatal("Expected no account")
 	}
+
+	srv.Close()
+	expectedStatus = http.StatusOK
+	resp, err = zc.CreateAccount("email@email.com", "password123")
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if resp != nil {
+		t.Fatal("Expected no account")
+	}
 }
 
 func TestGetAccount(t *testing.T) {
 	expectedStatus := http.StatusOK
+	returnBody := true
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/account", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(expectedStatus)
+
+		if !returnBody {
+			return
+		}
+
 		fmt.Fprintln(w, `{
   "account_state": "active",
   "plan": "Growth",
@@ -222,6 +253,19 @@ func TestGetAccount(t *testing.T) {
 	}
 
 	expectedStatus = http.StatusConflict
+	acct, err = zc.GetAccount()
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if acct != nil {
+		t.Fatal("Expected no account")
+	}
+
+	srv.Close()
+	expectedStatus = http.StatusOK
+	returnBody = false
+
 	acct, err = zc.GetAccount()
 	if err == nil {
 		t.Fatal("Expected error")

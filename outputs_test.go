@@ -9,8 +9,20 @@ import (
 )
 
 func TestGetOutputDetails(t *testing.T) {
+	expectedStatus := http.StatusOK
+	returnBody := true
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/outputs/123.json", func(w http.ResponseWriter, r *http.Request) {
+		if expectedStatus != http.StatusOK {
+			w.WriteHeader(expectedStatus)
+			return
+		}
+
+		if !returnBody {
+			return
+		}
+
 		fmt.Fprintln(w, `{
   "audio_bitrate_in_kbps": 74,
   "audio_codec": "aac",
@@ -101,11 +113,58 @@ func TestGetOutputDetails(t *testing.T) {
 	if details.MD5Checksum != "7f106918e02a69466afa0ee014174143" {
 		t.Fatal("Expected 7f106918e02a69466afa0ee014174143, got", details.MD5Checksum)
 	}
+
+	expectedStatus = http.StatusInternalServerError
+
+	details, err = zc.GetOutputDetails(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if details != nil {
+		t.Fatal("Expected no details", details)
+	}
+
+	expectedStatus = http.StatusOK
+	returnBody = false
+
+	details, err = zc.GetOutputDetails(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if details != nil {
+		t.Fatal("Expected no details", details)
+	}
+
+	srv.Close()
+	returnBody = true
+
+	details, err = zc.GetOutputDetails(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if details != nil {
+		t.Fatal("Expected no details", details)
+	}
 }
 
 func TestGetOutputProgress(t *testing.T) {
+	expectedStatus := http.StatusOK
+	returnBody := true
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/outputs/123/progress.json", func(w http.ResponseWriter, r *http.Request) {
+		if expectedStatus != http.StatusOK {
+			w.WriteHeader(expectedStatus)
+			return
+		}
+
+		if !returnBody {
+			return
+		}
+
 		fmt.Fprintln(w, `{
   "state": "processing",
   "current_event": "Transcoding",
@@ -142,5 +201,40 @@ func TestGetOutputProgress(t *testing.T) {
 
 	if progress.OverallProgress != 32.34567345 {
 		t.Fatal("Expected 32.34567345, got", progress.OverallProgress)
+	}
+
+	expectedStatus = http.StatusInternalServerError
+
+	progress, err = zc.GetOutputProgress(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if progress != nil {
+		t.Fatal("Expected no progress", progress)
+	}
+
+	expectedStatus = http.StatusOK
+	returnBody = false
+
+	progress, err = zc.GetOutputProgress(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if progress != nil {
+		t.Fatal("Expected no progress", progress)
+	}
+
+	srv.Close()
+	returnBody = true
+
+	progress, err = zc.GetOutputProgress(123)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+
+	if progress != nil {
+		t.Fatal("Expected no progress", progress)
 	}
 }

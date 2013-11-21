@@ -217,19 +217,19 @@ type OutputSettings struct {
 	CuePoints []*CuePointSettings `json:"cue_points,omitempty"` // Add event or navigation cue points to a FLV video.
 
 	// VP6
-	VP6TemporalDownWatermark int32   `json:"vp6_temporal_down_watermark,omitempty"` //default:  20 // VP6 temporal down watermark percentage.
-	VP6TemporalResampling    bool    `json:"vp6_temporal_resampling,omitempty"`     //default:  True when encoding with a low number of bits per pixel. Otherwise, false. // Enable or disable VP6 temporal resampling.
-	VP6UndershootPct         int32   `json:"vp6_undershoot_pct,omitempty"`          //default:  90 // Target a slightly lower datarate.
-	VP6Profile               string  `json:"vp6_profile,omitempty"`                 //default:  vp6e // VP6 profile: vp6s or vp6e.
-	VP6CompressionMode       string  `json:"vp6_compression_mode,omitempty"`        //default:  good // VP6 compression mode: good or best.
-	VP6TwoPassMinSection     int32   `json:"vp6_2pass_min_section,omitempty"`       //default:  40 // For two-pass VBR encoding, the lowest datarate that the encoder will allow.
-	VP6TwoPassMaxSection     int32   `json:"vp6_2pass_max_section,omitempty"`       //default:  400 // For two-pass VBR encoding, the highest datarate that the encoder will allow.
-	VP6StreamPrebuffer       int32   `json:"vp6_stream_prebuffer,omitempty"`        //default:  6 // Seconds of preload that are necessary before starting playback.
+	VP6TemporalDownWatermark int32   `json:"vp6_temporal_down_watermark,omitempty"` // VP6 temporal down watermark percentage.
+	VP6TemporalResampling    bool    `json:"vp6_temporal_resampling,omitempty"`     // Enable or disable VP6 temporal resampling.
+	VP6UndershootPct         int32   `json:"vp6_undershoot_pct,omitempty"`          // Target a slightly lower datarate.
+	VP6Profile               string  `json:"vp6_profile,omitempty"`                 // VP6 profile: vp6s or vp6e.
+	VP6CompressionMode       string  `json:"vp6_compression_mode,omitempty"`        // VP6 compression mode: good or best.
+	VP6TwoPassMinSection     int32   `json:"vp6_2pass_min_section,omitempty"`       // For two-pass VBR encoding, the lowest datarate that the encoder will allow.
+	VP6TwoPassMaxSection     int32   `json:"vp6_2pass_max_section,omitempty"`       // For two-pass VBR encoding, the highest datarate that the encoder will allow.
+	VP6StreamPrebuffer       int32   `json:"vp6_stream_prebuffer,omitempty"`        // Seconds of preload that are necessary before starting playback.
 	VP6StreamMaxBuffer       int32   `json:"vp6_stream_max_buffer,omitempty"`       // Maximum decoder buffer size
-	VP6DeinterlaceMode       string  `json:"vp6_deinterlace_mode,omitempty"`        //default:  adaptive // Deinterlace mode for VP6
-	VP6DenoiseLevel          float64 `json:"vp6_denoise_level,omitempty"`           //default:  0 // Denoise level for VP6
-	AlphaTransparency        bool    `json:"alpha_transparency,omitempty"`          //default:  false // Enable alpha transparency. Currently, only supported by VP6.
-	ConstantBitrate          bool    `json:"constant_bitrate,omitempty"`            //default:  false // Use constant bitrate (CBR) encoding.
+	VP6DeinterlaceMode       string  `json:"vp6_deinterlace_mode,omitempty"`        // Deinterlace mode for VP6
+	VP6DenoiseLevel          float64 `json:"vp6_denoise_level,omitempty"`           // Denoise level for VP6
+	AlphaTransparency        bool    `json:"alpha_transparency,omitempty"`          // Enable alpha transparency. Currently, only supported by VP6.
+	ConstantBitrate          bool    `json:"constant_bitrate,omitempty"`            // Use constant bitrate (CBR) encoding.
 
 	// MP4
 	Hint    bool  `json:"hint,omitempty"`     // Enable hinting of MP4 files for RTP/RTSP.

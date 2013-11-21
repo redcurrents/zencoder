@@ -101,8 +101,13 @@ type JobDetails struct {
 }
 
 // Create a Job
-func (z *Zencoder) CreateJob() (*CreateJobResponse, error) {
-	resp, err := z.call("POST", "jobs", nil) // nil = body
+func (z *Zencoder) CreateJob(settings *EncodingSettings) (*CreateJobResponse, error) {
+	b, err := json.Marshal(settings)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := z.call("POST", "jobs", NewByteReaderCloser(b))
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +117,7 @@ func (z *Zencoder) CreateJob() (*CreateJobResponse, error) {
 	}
 
 	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
