@@ -1,10 +1,6 @@
 package zencoder
 
 import (
-	"encoding/json"
-	"errors"
-	"io/ioutil"
-	"net/http"
 	"net/url"
 	"time"
 )
@@ -91,24 +87,9 @@ func GetReportQuery(path string, settings *ReportSettings) string {
 
 // Get VOD Usage
 func (z *Zencoder) GetVodUsage(settings *ReportSettings) (*VodUsage, error) {
-	resp, err := z.call("GET", GetReportQuery("reports/vod", settings), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var details VodUsage
-	err = json.Unmarshal(b, &details)
-	if err != nil {
+
+	if err := z.getBody(GetReportQuery("reports/vod", settings), &details); err != nil {
 		return nil, err
 	}
 
@@ -117,24 +98,9 @@ func (z *Zencoder) GetVodUsage(settings *ReportSettings) (*VodUsage, error) {
 
 // Get Live Usage
 func (z *Zencoder) GetLiveUsage(settings *ReportSettings) (*LiveUsage, error) {
-	resp, err := z.call("GET", GetReportQuery("reports/live", settings), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var details LiveUsage
-	err = json.Unmarshal(b, &details)
-	if err != nil {
+
+	if err := z.getBody(GetReportQuery("reports/live", settings), &details); err != nil {
 		return nil, err
 	}
 
@@ -142,24 +108,9 @@ func (z *Zencoder) GetLiveUsage(settings *ReportSettings) (*LiveUsage, error) {
 }
 
 func (z *Zencoder) GetUsage(settings *ReportSettings) (*CombinedUsage, error) {
-	resp, err := z.call("GET", GetReportQuery("reports/all", settings), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var details CombinedUsage
-	err = json.Unmarshal(b, &details)
-	if err != nil {
+
+	if err := z.getBody(GetReportQuery("reports/all", settings), &details); err != nil {
 		return nil, err
 	}
 

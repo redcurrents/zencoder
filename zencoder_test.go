@@ -19,7 +19,7 @@ func TestGenericCall(t *testing.T) {
 	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
-	resp, err := zc.call("GET", "test", nil)
+	resp, err := zc.call("GET", "test", nil, []int{http.StatusOK})
 	if err != nil {
 		t.Fatal("Expected no error", err)
 	}

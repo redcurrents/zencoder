@@ -23,7 +23,7 @@ func TestCreateJob(t *testing.T) {
 			return
 		}
 
-		fmt.Fprintln(w, `{"id": "1234","outputs": [{"id": "4321"}]}`)
+		fmt.Fprintln(w, `{"id": 1234,"outputs": [{"id": 4321}]}`)
 	})
 
 	srv := httptest.NewServer(mux)
@@ -41,7 +41,7 @@ func TestCreateJob(t *testing.T) {
 		t.Fatal("Expected a response")
 	}
 
-	if resp.Id != "1234" {
+	if resp.Id != 1234 {
 		t.Fatal("Expected Id=1234", resp.Id)
 	}
 
@@ -49,7 +49,7 @@ func TestCreateJob(t *testing.T) {
 		t.Fatal("Expected one output", len(resp.Outputs))
 	}
 
-	if resp.Outputs[0].Id != "4321" {
+	if resp.Outputs[0].Id != 4321 {
 		t.Fatal("Expected Id=4321", resp.Outputs[0].Id)
 	}
 

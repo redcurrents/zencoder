@@ -1,15 +1,11 @@
 package zencoder
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 )
 
 type FileProgress struct {
-	Id                   int32   `json:"id,omitempty"`
+	Id                   int64   `json:"id,omitempty"`
 	State                string  `json:"state,omitempty"`
 	CurrentEvent         string  `json:"current_event,omitempty"`
 	CurrentEventProgress float64 `json:"current_event_progress,omitempty"`
@@ -25,20 +21,23 @@ type JobProgress struct {
 
 // Response from CreateJob
 type CreateJobResponse struct {
-	Id      string `json:"id,omitempty"`
+	Id      int64 `json:"id,omitempty"`
+	Test    bool  `json:"test,omitempty"`
 	Outputs []struct {
-		Id string `json:"id,omitempty"`
+		Id    int64   `json:"id,omitempty"`
+		Label *string `json:"label,omitempty"`
+		Url   string  `json:"url,omitempty"`
 	} `json:"outputs,omitempty"`
 }
 
 // A MediaFile
 type MediaFile struct {
-	Id                 int32   `json:"id,omitempty"`
+	Id                 int64   `json:"id,omitempty"`
 	Url                string  `json:"url,omitempty"`
 	Format             string  `json:"format,omitempty"`
 	State              string  `json:"state,omitempty"`
 	Test               bool    `json:"test,omitempty"`
-	Privacy            bool    `json:"privacy,omitempty"`
+	Privacy            bool    `json:"privacy"`
 	Width              int32   `json:"width,omitempty"`
 	Height             int32   `json:"height,omitempty"`
 	FrameRate          float64 `json:"frame_rate,omitempty"`
@@ -74,7 +73,7 @@ type OutputMediaFile struct {
 
 // A Thumbnail
 type Thumbnail struct {
-	Id        int32  `json:"id,omitempty"`
+	Id        int64  `json:"id,omitempty"`
 	Url       string `json:"url,omitempty"`
 	CreatedAt string `json:"created_at,omitempty"`
 	UpdatedAt string `json:"updated_at,omitempty"`
@@ -82,7 +81,7 @@ type Thumbnail struct {
 
 // A Job
 type Job struct {
-	Id               int32        `json:"id,omitempty"`
+	Id               int64        `json:"id,omitempty"`
 	PassThrough      *string      `json:"pass_through,omitempty"`
 	State            string       `json:"state,omitempty"`
 	InputMediaFile   *MediaFile   `json:"input_media_file,omitempty"`
@@ -102,29 +101,9 @@ type JobDetails struct {
 
 // Create a Job
 func (z *Zencoder) CreateJob(settings *EncodingSettings) (*CreateJobResponse, error) {
-	b, err := json.Marshal(settings)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := z.call("POST", "jobs", NewByteReaderCloser(b))
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result CreateJobResponse
-	err = json.Unmarshal(b, &result)
-	if err != nil {
+
+	if err := z.post("jobs", settings, &result); err != nil {
 		return nil, err
 	}
 
@@ -133,24 +112,9 @@ func (z *Zencoder) CreateJob(settings *EncodingSettings) (*CreateJobResponse, er
 
 // List Jobs
 func (z *Zencoder) ListJobs() ([]*JobDetails, error) {
-	resp, err := z.call("GET", "jobs.json", nil) // nil = body
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result []*JobDetails
-	err = json.Unmarshal(b, &result)
-	if err != nil {
+
+	if err := z.getBody("jobs.json", &result); err != nil {
 		return nil, err
 	}
 
@@ -158,25 +122,21 @@ func (z *Zencoder) ListJobs() ([]*JobDetails, error) {
 }
 
 // Get Job Details
-func (z *Zencoder) GetJobDetails(id int32) (*JobDetails, error) {
-	resp, err := z.call("GET", fmt.Sprintf("jobs/%d.json", id), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
+func (z *Zencoder) GetJobDetails(id int64) (*JobDetails, error) {
 	var result JobDetails
-	err = json.Unmarshal(b, &result)
-	if err != nil {
+
+	if err := z.getBody(fmt.Sprintf("jobs/%d.json", id), &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+// Job Progress
+func (z *Zencoder) GetJobProgress(id int64) (*JobProgress, error) {
+	var result JobProgress
+
+	if err := z.getBody(fmt.Sprintf("jobs/%d/progress.json", id), &result); err != nil {
 		return nil, err
 	}
 
@@ -184,69 +144,16 @@ func (z *Zencoder) GetJobDetails(id int32) (*JobDetails, error) {
 }
 
 // Resubmit a Job
-func (z *Zencoder) ResubmitJob(id int32) error {
-	resp, err := z.call("PUT", fmt.Sprintf("jobs/%d/resubmit.json", id), nil)
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		return errors.New(resp.Status)
-	}
-
-	return nil
+func (z *Zencoder) ResubmitJob(id int64) error {
+	return z.putNoContent(fmt.Sprintf("jobs/%d/resubmit.json", id))
 }
 
 // Cancel a Job
-func (z *Zencoder) CancelJob(id int32) error {
-	resp, err := z.call("PUT", fmt.Sprintf("jobs/%d/cancel.json", id), nil)
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		return errors.New(resp.Status)
-	}
-
-	return nil
+func (z *Zencoder) CancelJob(id int64) error {
+	return z.putNoContent(fmt.Sprintf("jobs/%d/cancel.json", id))
 }
 
 // Finish a Live Job
-func (z *Zencoder) FinishLiveJob(id int32) error {
-	resp, err := z.call("PUT", fmt.Sprintf("jobs/%d/finish", id), nil)
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		return errors.New(resp.Status)
-	}
-
-	return nil
-}
-
-// Job Progress
-func (z *Zencoder) GetJobProgress(id int32) (*JobProgress, error) {
-	resp, err := z.call("GET", fmt.Sprintf("jobs/%d/progress.json", id), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	var result JobProgress
-	err = json.Unmarshal(b, &result)
-	if err != nil {
-		return nil, err
-	}
-
-	return &result, nil
+func (z *Zencoder) FinishLiveJob(id int64) error {
+	return z.putNoContent(fmt.Sprintf("jobs/%d/finish", id))
 }

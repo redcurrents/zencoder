@@ -1,12 +1,5 @@
 package zencoder
 
-import (
-	"encoding/json"
-	"errors"
-	"io/ioutil"
-	"net/http"
-)
-
 type AccountDetails struct {
 	AccountState    string `json:"account_state,omitempty"`
 	Plan            string `json:"plan,omitempty"`
@@ -40,29 +33,9 @@ func (z *Zencoder) CreateAccount(email, password string) (*CreateAccountResponse
 		request.PasswordConfirmation = &password
 	}
 
-	b, err := json.Marshal(request)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := z.call("POST", "account", NewByteReaderCloser(b))
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result CreateAccountResponse
-	err = json.Unmarshal(b, &result)
-	if err != nil {
+
+	if err := z.post("account", request, &result); err != nil {
 		return nil, err
 	}
 
@@ -71,24 +44,9 @@ func (z *Zencoder) CreateAccount(email, password string) (*CreateAccountResponse
 
 // Get Account Details
 func (z *Zencoder) GetAccount() (*AccountDetails, error) {
-	resp, err := z.call("GET", "account", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var details AccountDetails
-	err = json.Unmarshal(b, &details)
-	if err != nil {
+
+	if err := z.getBody("account", &details); err != nil {
 		return nil, err
 	}
 
@@ -97,28 +55,10 @@ func (z *Zencoder) GetAccount() (*AccountDetails, error) {
 
 // Set Integration Mode
 func (z *Zencoder) SetIntegrationMode() error {
-	resp, err := z.call("PUT", "account/integration", nil)
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		return errors.New(resp.Status)
-	}
-
-	return nil
+	return z.putNoContent("account/integration")
 }
 
 // Set Live Mode
 func (z *Zencoder) SetLiveMode() error {
-	resp, err := z.call("PUT", "account/live", nil)
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		return errors.New(resp.Status)
-	}
-
-	return nil
+	return z.putNoContent("account/live")
 }
