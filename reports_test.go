@@ -15,43 +15,85 @@ func TestGetReportQuery(t *testing.T) {
 		t.Fatal("Expected /path, got", resp)
 	}
 
-	var settings zencoder.ReportSettings
-	resp = zencoder.GetReportQuery("/path", &settings)
+	var settings *zencoder.ReportSettings
+	resp = zencoder.GetReportQuery("/path", settings)
 	if resp != "/path" {
 		t.Fatal("Expected /path, got", resp)
 	}
 
 	now := time.Date(2013, time.November, 22, 0, 0, 0, 0, time.UTC)
 
-	settings.From = &now
-	resp = zencoder.GetReportQuery("/path", &settings)
+	settings = zencoder.Report()
+
+	settings = settings.ReportFrom(now)
+	resp = zencoder.GetReportQuery("/path", settings)
 	if resp != "/path?from=2013-11-22" {
 		t.Fatal("Expected /path?from=2013-11-22, got", resp)
 	}
 
-	settings.To = &now
-	resp = zencoder.GetReportQuery("/path", &settings)
+	settings = settings.ReportTo(now)
+	resp = zencoder.GetReportQuery("/path", settings)
 	if resp != "/path?from=2013-11-22&to=2013-11-22" {
 		t.Fatal("Expected /path?from=2013-11-22&to=2013-11-22, got", resp)
 	}
 
 	settings.From = nil
-	resp = zencoder.GetReportQuery("/path", &settings)
+	resp = zencoder.GetReportQuery("/path", settings)
 	if resp != "/path?to=2013-11-22" {
 		t.Fatal("Expected /path?to=2013-11-22, got", resp)
 	}
 
-	grouping := "group by"
-	settings.Grouping = &grouping
-	resp = zencoder.GetReportQuery("/path", &settings)
+	settings = settings.ReportGrouping("group by")
+	resp = zencoder.GetReportQuery("/path", settings)
 	if resp != "/path?grouping=group+by&to=2013-11-22" {
 		t.Fatal("Expected /path?grouping=group+by&to=2013-11-22, got", resp)
 	}
 
 	settings.To = nil
-	resp = zencoder.GetReportQuery("/path", &settings)
+	resp = zencoder.GetReportQuery("/path", settings)
 	if resp != "/path?grouping=group+by" {
 		t.Fatal("Expected /path?grouping=group+by, got", resp)
+	}
+}
+
+func TestGetReportFrom(t *testing.T) {
+	now := time.Date(2013, time.November, 22, 0, 0, 0, 0, time.UTC)
+	settings := zencoder.ReportFrom(now)
+	if settings.From == nil || *settings.From != now {
+		t.Fatal("Expected now", settings.From)
+	}
+	if settings.To != nil {
+		t.Fatal("Expected nil", settings.To)
+	}
+	if settings.Grouping != nil {
+		t.Fatal("Expected nil", settings.Grouping)
+	}
+}
+
+func TestGetReportTo(t *testing.T) {
+	now := time.Date(2013, time.November, 22, 0, 0, 0, 0, time.UTC)
+	settings := zencoder.ReportTo(now)
+	if settings.From != nil {
+		t.Fatal("Expected nil", settings.From)
+	}
+	if settings.To == nil || *settings.To != now {
+		t.Fatal("Expected now", settings.To)
+	}
+	if settings.Grouping != nil {
+		t.Fatal("Expected nil", settings.Grouping)
+	}
+}
+
+func TestGetReportGrouping(t *testing.T) {
+	settings := zencoder.ReportGrouping("group by")
+	if settings.From != nil {
+		t.Fatal("Expected nil", settings.From)
+	}
+	if settings.To != nil {
+		t.Fatal("Expected nil", settings.To)
+	}
+	if settings.Grouping == nil || *settings.Grouping != "group by" {
+		t.Fatal("Expected group by", settings.Grouping)
 	}
 }
 

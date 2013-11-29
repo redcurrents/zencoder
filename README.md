@@ -32,7 +32,7 @@ All Zencoder methods are on the Zencoder struct.  Create a new one bound to your
 
 ```golang
 // make sure you replace [YOUR API KEY HERE] with your API key
-zc := zencoder.NewZencoder("[YOUR API KEY HERE]") 
+zc := zencoder.NewZencoder("[YOUR API KEY HERE]")
 ```
 
 ## [Jobs](https://app.zencoder.com/docs/api/jobs)
@@ -119,14 +119,17 @@ err := zc.SetLiveMode()
 
 ## [Reports](https://app.zencoder.com/docs/api/reports)
 
-### [Get VOD Usage](https://app.zencoder.com/docs/api/reports/vod)
+### ReportSettings
 
-#### Using default settings
+All reporting interfaces take either ```nil``` or a ```ReportSettings``` object.
+
+Using ```nil``` denotes to use default settings.  In this case, assume ```settings``` in the examples below is defined as:
+
 ```golang
-usage, err := zc.GetVodUsage(nil)
+var settings *zencoder.ReportSettings = nil
 ```
 
-#### Using custom settings
+A ```ReportSettings``` object can either be constructed manually as in:
 ```golang
 var start, end time.Date
 settings := &zencoder.ReportSettings{
@@ -134,42 +137,30 @@ settings := &zencoder.ReportSettings{
     To:       &end,
     Grouping: "key",
 }
+```
+
+Or, you can use a Fluent-style interface to build a ```ReportSettings``` object, as in:
+
+```golang
+var start, end time.Date
+settings := zencoder.ReportFrom(start).To(time).Grouping("key")
+```
+
+### [Get VOD Usage](https://app.zencoder.com/docs/api/reports/vod)
+
+```golang
 usage, err := zc.GetVodUsage(settings)
 ```
 
 ### [Get Live Usage](https://app.zencoder.com/docs/api/reports/live)
 
-#### Using default settings
 ```golang
-usage, err := zc.GetLiveUsage(nil)
-```
-
-#### Using custom settings
-```golang
-var start, end time.Date
-settings := &zencoder.ReportSettings{
-    From:     &start,
-    To:       &end,
-    Grouping: "key",
-}
 usage, err := zc.GetLiveUsage(settings)
 ```
 
 ### [Get Total Usage](https://app.zencoder.com/docs/api/reports/all)
 
-#### Using default settings
 ```golang
-usage, err := zc.GetUsage(nil)
-```
-
-#### Using custom settings
-```golang
-var start, end time.Date
-settings := &zencoder.ReportSettings{
-    From:     &start,
-    To:       &end,
-    Grouping: "key",
-}
 usage, err := zc.GetUsage(settings)
 ```
 

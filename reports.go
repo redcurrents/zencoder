@@ -64,6 +64,43 @@ type CombinedUsage struct {
 	} `json:"statistics,omitempty"`
 }
 
+func Report() *ReportSettings {
+	return &ReportSettings{}
+}
+
+func ReportFrom(from time.Time) *ReportSettings {
+	return &ReportSettings{
+		From: &from,
+	}
+}
+
+func ReportTo(to time.Time) *ReportSettings {
+	return &ReportSettings{
+		To: &to,
+	}
+}
+
+func ReportGrouping(grouping string) *ReportSettings {
+	return &ReportSettings{
+		Grouping: &grouping,
+	}
+}
+
+func (s *ReportSettings) ReportFrom(from time.Time) *ReportSettings {
+	s.From = &from
+	return s
+}
+
+func (s *ReportSettings) ReportTo(to time.Time) *ReportSettings {
+	s.To = &to
+	return s
+}
+
+func (s *ReportSettings) ReportGrouping(grouping string) *ReportSettings {
+	s.Grouping = &grouping
+	return s
+}
+
 func GetReportQuery(path string, settings *ReportSettings) string {
 	if settings != nil {
 		query := make(url.Values)
