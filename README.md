@@ -1,7 +1,7 @@
 zencoder
 ========
 
-[![Build Status](https://travis-ci.org/brandscreen/zencoder.png)](https://travis-ci.org/brandscreen/zencoder) [![Coverage Status](https://coveralls.io/repos/brandscreen/zencoder/badge.png)](https://coveralls.io/r/brandscreen/zencoder)
+[![Build Status](https://travis-ci.org/brandscreen/zencoder.png)](https://travis-ci.org/brandscreen/zencoder) [![Coverage Status](https://coveralls.io/repos/brandscreen/zencoder/badge.png?branch=HEAD)](https://coveralls.io/r/brandscreen/zencoder?branch=HEAD)
 
 [Go](http://golang.org) integration for [Zencoder API](http://www.zencoder.com/) video transcoding service.
 
