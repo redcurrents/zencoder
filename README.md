@@ -10,6 +10,10 @@ zencoder
 * Go 1.1 or higher
 * A Zencoder account/API key (get one at app.zencoder.com)
 
+# Documentation
+
+[Godoc](http://godoc.org/) documentation is available at [http://godoc.org/github.com/brandscreen/zencoder](http://godoc.org/github.com/brandscreen/zencoder).
+
 # Installation
 
 ```bash
