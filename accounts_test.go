@@ -1,7 +1,6 @@
-package zencoder_test
+package zencoder
 
 import (
-	zencoder "."
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -22,7 +21,7 @@ func TestSetIntegrationMode(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	err := zc.SetIntegrationMode()
@@ -60,7 +59,7 @@ func TestSetLiveMode(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	err := zc.SetLiveMode()
@@ -99,7 +98,7 @@ func TestCreateAccount(t *testing.T) {
 			return
 		}
 
-		var request zencoder.CreateAccountRequest
+		var request CreateAccountRequest
 		err = json.Unmarshal(b, &request)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -125,7 +124,7 @@ func TestCreateAccount(t *testing.T) {
 			return
 		}
 
-		var response zencoder.CreateAccountResponse
+		var response CreateAccountResponse
 		response.ApiKey = "a123afdaf23fa231245fadcbbb"
 
 		if request.Password == nil {
@@ -146,7 +145,7 @@ func TestCreateAccount(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	resp, err := zc.CreateAccount("email@email.com", "password123")
@@ -221,7 +220,7 @@ func TestGetAccount(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	acct, err := zc.GetAccount()

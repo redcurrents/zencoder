@@ -1,7 +1,6 @@
-package zencoder_test
+package zencoder
 
 import (
-	zencoder "."
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -47,7 +46,7 @@ func TestGetOutputDetails(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	details, err := zc.GetOutputDetails(123)
@@ -175,7 +174,7 @@ func TestGetOutputProgress(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	progress, err := zc.GetOutputProgress(123)

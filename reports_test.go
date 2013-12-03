@@ -1,7 +1,6 @@
-package zencoder_test
+package zencoder
 
 import (
-	zencoder "."
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -10,47 +9,47 @@ import (
 )
 
 func TestGetReportQuery(t *testing.T) {
-	resp := zencoder.GetReportQuery("/path", nil)
+	resp := GetReportQuery("/path", nil)
 	if resp != "/path" {
 		t.Fatal("Expected /path, got", resp)
 	}
 
-	var settings *zencoder.ReportSettings
-	resp = zencoder.GetReportQuery("/path", settings)
+	var settings *ReportSettings
+	resp = GetReportQuery("/path", settings)
 	if resp != "/path" {
 		t.Fatal("Expected /path, got", resp)
 	}
 
 	now := time.Date(2013, time.November, 22, 0, 0, 0, 0, time.UTC)
 
-	settings = zencoder.Report()
+	settings = Report()
 
 	settings = settings.ReportFrom(now)
-	resp = zencoder.GetReportQuery("/path", settings)
+	resp = GetReportQuery("/path", settings)
 	if resp != "/path?from=2013-11-22" {
 		t.Fatal("Expected /path?from=2013-11-22, got", resp)
 	}
 
 	settings = settings.ReportTo(now)
-	resp = zencoder.GetReportQuery("/path", settings)
+	resp = GetReportQuery("/path", settings)
 	if resp != "/path?from=2013-11-22&to=2013-11-22" {
 		t.Fatal("Expected /path?from=2013-11-22&to=2013-11-22, got", resp)
 	}
 
 	settings.From = nil
-	resp = zencoder.GetReportQuery("/path", settings)
+	resp = GetReportQuery("/path", settings)
 	if resp != "/path?to=2013-11-22" {
 		t.Fatal("Expected /path?to=2013-11-22, got", resp)
 	}
 
 	settings = settings.ReportGrouping("group by")
-	resp = zencoder.GetReportQuery("/path", settings)
+	resp = GetReportQuery("/path", settings)
 	if resp != "/path?grouping=group+by&to=2013-11-22" {
 		t.Fatal("Expected /path?grouping=group+by&to=2013-11-22, got", resp)
 	}
 
 	settings.To = nil
-	resp = zencoder.GetReportQuery("/path", settings)
+	resp = GetReportQuery("/path", settings)
 	if resp != "/path?grouping=group+by" {
 		t.Fatal("Expected /path?grouping=group+by, got", resp)
 	}
@@ -58,7 +57,7 @@ func TestGetReportQuery(t *testing.T) {
 
 func TestGetReportFrom(t *testing.T) {
 	now := time.Date(2013, time.November, 22, 0, 0, 0, 0, time.UTC)
-	settings := zencoder.ReportFrom(now)
+	settings := ReportFrom(now)
 	if settings.From == nil || *settings.From != now {
 		t.Fatal("Expected now", settings.From)
 	}
@@ -72,7 +71,7 @@ func TestGetReportFrom(t *testing.T) {
 
 func TestGetReportTo(t *testing.T) {
 	now := time.Date(2013, time.November, 22, 0, 0, 0, 0, time.UTC)
-	settings := zencoder.ReportTo(now)
+	settings := ReportTo(now)
 	if settings.From != nil {
 		t.Fatal("Expected nil", settings.From)
 	}
@@ -85,7 +84,7 @@ func TestGetReportTo(t *testing.T) {
 }
 
 func TestGetReportGrouping(t *testing.T) {
-	settings := zencoder.ReportGrouping("group by")
+	settings := ReportGrouping("group by")
 	if settings.From != nil {
 		t.Fatal("Expected nil", settings.From)
 	}
@@ -135,7 +134,7 @@ func TestGetVodUsage(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	details, err := zc.GetVodUsage(nil)
@@ -261,7 +260,7 @@ func TestGetLiveUsage(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	details, err := zc.GetLiveUsage(nil)
@@ -428,7 +427,7 @@ func TestGetUsage(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	details, err := zc.GetUsage(nil)

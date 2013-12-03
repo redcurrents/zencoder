@@ -1,7 +1,6 @@
-package zencoder_test
+package zencoder
 
 import (
-	zencoder "."
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -28,10 +27,10 @@ func TestCreateJob(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
-	var settings zencoder.EncodingSettings
+	var settings EncodingSettings
 	resp, err := zc.CreateJob(&settings)
 	if err != nil {
 		t.Fatal("Expected no error", err)
@@ -174,7 +173,7 @@ func TestListJobs(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	jobs, err := zc.ListJobs()
@@ -489,7 +488,7 @@ func TestGetJobDetails(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	details, err := zc.GetJobDetails(123)
@@ -757,7 +756,7 @@ func TestGetJobProgress(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	progress, err := zc.GetJobProgress(123)
@@ -845,7 +844,7 @@ func TestResubmitJob(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	err := zc.ResubmitJob(123)
@@ -879,7 +878,7 @@ func TestCancelJob(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	err := zc.CancelJob(123)
@@ -913,7 +912,7 @@ func TestFinishLiveJob(t *testing.T) {
 
 	srv := httptest.NewServer(mux)
 
-	zc := zencoder.NewZencoder("abc")
+	zc := NewZencoder("abc")
 	zc.BaseUrl = srv.URL
 
 	err := zc.FinishLiveJob(123)
