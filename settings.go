@@ -189,6 +189,7 @@ type OutputSettings struct {
 	PrepareForSegmenting  string            `json:"prepare_for_segmenting,omitempty"`   // Include captions and keyframe timing for segmenting.
 	InstantPlay           bool              `json:"instant_play,omitempty"`             // Create an instant play output that is ready for playback within seconds.
 	SMILBaseUrl           string            `json:"smil_base_url,omitempty"`            // Add <meta base="smil_base_url_value"/> to the <head> section of an SMIL playlist.
+	PlaylistFormat        string            `json:"playlist_format,omitempty"`          // Sets format for a playlist (rendition manifest) output.
 
 	// Encryption
 	EncryptionMethod            string `json:"encryption_method,omitempty"`              // Set the encryption method to use for encrypting.
