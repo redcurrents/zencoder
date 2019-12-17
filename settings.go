@@ -50,6 +50,7 @@ type StreamSettings struct {
 	Bandwidth  int32  `json:"bandwidth,omitempty"`  // Specifies the bandwidth of a playlist stream
 	Resolution string `json:"resolution,omitempty"` // Specifies the resolution of a playlist stream
 	Codecs     string `json:"codecs,omitempty"`     // Specifies the codecs used in a playlist stream
+	Source     string `json:"source,omitempty"`     // References a label on a media output of the same job, to fill in the corresponding data in the playlist.
 }
 
 type CuePointSettings struct {
