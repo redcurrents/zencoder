@@ -3,7 +3,6 @@ package zencoder
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -58,7 +57,9 @@ func (z *Zencoder) call(method, path string, request interface{}, expectedStatus
 		}
 	}
 
-	return nil, errors.New(resp.Status)
+	// If there is an unexpected status, return the status + the body as an error
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	return nil, fmt.Errorf("%s. Body: %s", resp.Status, string(bodyBytes))
 }
 
 func (z *Zencoder) post(path string, request interface{}, response interface{}) error {
