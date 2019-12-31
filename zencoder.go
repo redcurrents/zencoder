@@ -57,9 +57,12 @@ func (z *Zencoder) call(method, path string, request interface{}, expectedStatus
 		}
 	}
 
-	// If there is an unexpected status, return the status + the body as an error
+	// Format the error
+	// If there is an unexpected status, format as status + body
 	bodyBytes, _ := ioutil.ReadAll(resp.Body)
-	return nil, fmt.Errorf("%s. Body: %s", resp.Status, string(bodyBytes))
+	err = fmt.Errorf("%s. Body: %s", resp.Status, string(bodyBytes))
+
+	return nil, err
 }
 
 func (z *Zencoder) post(path string, request interface{}, response interface{}) error {
