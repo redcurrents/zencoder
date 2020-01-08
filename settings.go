@@ -249,6 +249,10 @@ type OutputSettings struct {
 	// Transmuxing
 	CopyVideo bool `json:"copy_video,omitempty"` // Copy the video track of the input file
 	CopyAudio bool `json:"copy_audio,omitempty"` // Copy the audio track of the input file
+
+	// Fields in Notifications
+	Id    int64  `json:"id,omitempty"`
+	State string `json:"state,omitempty"`
 }
 
 type EncodingSettings struct {

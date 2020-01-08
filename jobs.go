@@ -32,51 +32,61 @@ type CreateJobResponse struct {
 
 // A MediaFile
 type MediaFile struct {
-	Id                 int64   `json:"id,omitempty"`
-	Url                string  `json:"url,omitempty"`
-	Format             string  `json:"format,omitempty"`
-	State              string  `json:"state,omitempty"`
-	Test               bool    `json:"test,omitempty"`
-	Privacy            bool    `json:"privacy"`
-	Width              int32   `json:"width,omitempty"`
-	Height             int32   `json:"height,omitempty"`
-	FrameRate          float64 `json:"frame_rate,omitempty"`
-	DurationInMs       int32   `json:"duration_in_ms,omitempty"`
-	Channels           string  `json:"channels,omitempty"`
-	AudioCodec         string  `json:"audio_codec,omitempty"`
-	AudioBitrateInKbps int32   `json:"audio_bitrate_in_kbps,omitempty"`
-	AudioSampleRate    int32   `json:"audio_sample_rate,omitempty"`
-	VideoCodec         string  `json:"video_codec,omitempty"`
-	VideoBitrateInKbps int32   `json:"video_bitrate_in_kbps,omitempty"`
-	TotalBitrateInKbps int32   `json:"total_bitrate_in_kbps,omitempty"`
-	MD5Checksum        string  `json:"md5_checksum,omitempty"`
-	ErrorMessage       *string `json:"error_message,omitempty"`
-	ErrorClass         *string `json:"error_class,omitempty"`
-	Label              *string `json:"label,omitempty"`
-	CreatedAt          string  `json:"created_at,omitempty"`
-	FinishedAt         string  `json:"finished_at,omitempty"`
-	UpdatedAt          string  `json:"updated_at,omitempty"`
-	FileSizeInBytes    int64   `json:"file_size_bytes,omitempty"`
+	Id                 int64        `json:"id,omitempty"`
+	Url                string       `json:"url,omitempty"`
+	Label              *string      `json:"label,omitempty"`
+	State              string       `json:"state,omitempty"`
+	Format             string       `json:"format,omitempty"`
+	Type               string       `json:"type,omitempty"`
+	FrameRate          float64      `json:"frame_rate,omitempty"`
+	DurationInMs       int32        `json:"duration_in_ms,omitempty"`
+	AudioSampleRate    int32        `json:"audio_sample_rate,omitempty"`
+	AudioBitrateInKbps int32        `json:"audio_bitrate_in_kbps,omitempty"`
+	AudioCodec         string       `json:"audio_codec,omitempty"`
+	Height             int32        `json:"height,omitempty"`
+	Width              int32        `json:"width,omitempty"`
+	FileSizeInBytes    int64        `json:"file_size_in_bytes,omitempty"`
+	FileSizeBytes      int64        `json:"file_size_bytes,omitempty"`
+	VideoCodec         string       `json:"video_codec,omitempty"`
+	TotalBitrateInKbps int32        `json:"total_bitrate_in_kbps,omitempty"`
+	Channels           string       `json:"channels,omitempty"`
+	VideoBitrateInKbps int32        `json:"video_bitrate_in_kbps,omitempty"`
+	Thumbnails         []*Thumbnail `json:"thumbnails,omitempty"`
+	MD5Checksum        string       `json:"md5_checksum,omitempty"`
+	Privacy            bool         `json:"privacy"`
+	ErrorMessage       *string      `json:"error_message,omitempty"`
+	ErrorClass         *string      `json:"error_class,omitempty"`
+	CreatedAt          string       `json:"created_at,omitempty"`
+	FinishedAt         string       `json:"finished_at,omitempty"`
+	UpdatedAt          string       `json:"updated_at,omitempty"`
+	Test               bool         `json:"test,omitempty"`
 }
 
 type InputMediaFile struct {
 	MediaFile
-	FileSizeInBytes int64 `json:"file_size_in_bytes,omitempty"`
-	JobId           int64 `json:"job_id,omitempty"`
+	JobId int64 `json:"job_id,omitempty"`
 }
 
 type OutputMediaFile struct {
 	MediaFile
-	FileSizeInBytes int64 `json:"file_size_in_bytes,omitempty"`
-	JobId           int64 `json:"job_id,omitempty"`
+	JobId int64 `json:"job_id,omitempty"`
 }
 
 // A Thumbnail
 type Thumbnail struct {
-	Id        int64  `json:"id,omitempty"`
-	Url       string `json:"url,omitempty"`
-	CreatedAt string `json:"created_at,omitempty"`
-	UpdatedAt string `json:"updated_at,omitempty"`
+	Id        int64             `json:"id,omitempty"`
+	Url       string            `json:"url,omitempty"`
+	Label     string            `json:"label,omitempty"`
+	Images    []*ThumbnailImage `json:"images,omitempty"`
+	CreatedAt string            `json:"created_at,omitempty"`
+	UpdatedAt string            `json:"updated_at,omitempty"`
+}
+
+type ThumbnailImage struct {
+	Dimensions    string `json:"dimensions,omitempty"`
+	FileSizeBytes int64  `json:"file_size_bytes,omitempty"`
+	Format        string `json:"format,omitempty"`
+	Url           string `json:"url,omitempty"`
 }
 
 // A Job

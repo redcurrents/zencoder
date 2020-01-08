@@ -249,8 +249,8 @@ func TestListJobs(t *testing.T) {
 	if jobs[0].Job.InputMediaFile.Height != 352 {
 		t.Fatal("Expected 352, got", jobs[0].Job.InputMediaFile.Height)
 	}
-	if jobs[0].Job.InputMediaFile.FileSizeInBytes != 1862748 {
-		t.Fatal("Expected 1862748, got", jobs[0].Job.InputMediaFile.FileSizeInBytes)
+	if jobs[0].Job.InputMediaFile.FileSizeBytes != 1862748 {
+		t.Fatal("Expected 1862748, got", jobs[0].Job.InputMediaFile.FileSizeBytes)
 	}
 	if jobs[0].Job.InputMediaFile.VideoCodec != "h264" {
 		t.Fatal("Expected h264, got", jobs[0].Job.InputMediaFile.VideoCodec)
@@ -321,8 +321,8 @@ func TestListJobs(t *testing.T) {
 	if jobs[0].Job.OutputMediaFiles[0].Height != 352 {
 		t.Fatal("Expected 352, got", jobs[0].Job.OutputMediaFiles[0].Height)
 	}
-	if jobs[0].Job.OutputMediaFiles[0].FileSizeInBytes != 1386663 {
-		t.Fatal("Expected 1386663, got", jobs[0].Job.OutputMediaFiles[0].FileSizeInBytes)
+	if jobs[0].Job.OutputMediaFiles[0].FileSizeBytes != 1386663 {
+		t.Fatal("Expected 1386663, got", jobs[0].Job.OutputMediaFiles[0].FileSizeBytes)
 	}
 	if jobs[0].Job.OutputMediaFiles[0].VideoCodec != "h264" {
 		t.Fatal("Expected h264, got", jobs[0].Job.OutputMediaFiles[0].VideoCodec)
@@ -567,8 +567,8 @@ func TestGetJobDetails(t *testing.T) {
 	if details.Job.InputMediaFile.Height != 352 {
 		t.Fatal("Expected 352, got", details.Job.InputMediaFile.Height)
 	}
-	if details.Job.InputMediaFile.FileSizeInBytes != 1862748 {
-		t.Fatal("Expected 1862748, got", details.Job.InputMediaFile.FileSizeInBytes)
+	if details.Job.InputMediaFile.FileSizeBytes != 1862748 {
+		t.Fatal("Expected 1862748, got", details.Job.InputMediaFile.FileSizeBytes)
 	}
 	if details.Job.InputMediaFile.VideoCodec != "h264" {
 		t.Fatal("Expected h264, got", details.Job.InputMediaFile.VideoCodec)
@@ -637,8 +637,8 @@ func TestGetJobDetails(t *testing.T) {
 	if details.Job.OutputMediaFiles[0].Height != 352 {
 		t.Fatal("Expected 352, got", details.Job.OutputMediaFiles[0].Height)
 	}
-	if details.Job.OutputMediaFiles[0].FileSizeInBytes != 1386663 {
-		t.Fatal("Expected 1386663, got", details.Job.OutputMediaFiles[0].FileSizeInBytes)
+	if details.Job.OutputMediaFiles[0].FileSizeBytes != 1386663 {
+		t.Fatal("Expected 1386663, got", details.Job.OutputMediaFiles[0].FileSizeBytes)
 	}
 	if details.Job.OutputMediaFiles[0].VideoCodec != "h264" {
 		t.Fatal("Expected h264, got", details.Job.OutputMediaFiles[0].VideoCodec)
