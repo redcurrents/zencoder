@@ -56,6 +56,7 @@ type MediaFile struct {
 	Privacy            bool         `json:"privacy"`
 	ErrorMessage       *string      `json:"error_message,omitempty"`
 	ErrorClass         *string      `json:"error_class,omitempty"`
+	ErrorLink          *string      `json:"error_link,omitempty"`
 	CreatedAt          string       `json:"created_at,omitempty"`
 	FinishedAt         string       `json:"finished_at,omitempty"`
 	UpdatedAt          string       `json:"updated_at,omitempty"`
