@@ -174,10 +174,7 @@ type OutputSettings struct {
 	Notifications []*NotificationSettings `json:"notifications,omitempty"` // Be notified when a job or output is complete.
 
 	// Conditional Outputs
-	MinSize     string `json:"min_size,omitempty"`     // Skip output if the input file is smaller than the given dimensions.
-	MaxSize     string `json:"max_size,omitempty"`     // Skip output if the input file is larger than the given dimensions.
-	MinDuration int32  `json:"min_duration,omitempty"` // Skip output if the input file is shorter than the given duration, in seconds.
-	MaxDuration int32  `json:"max_duration,omitempty"` // Skip output if the input file is longer than the given duration, in seconds.
+	Skip *Skip `json:"skip,omitempty"` // An object containing conditions for skipping the output
 
 	// Segmented Streaming
 	SegmentSeconds        int32             `json:"segment_seconds,omitempty"`          // Sets the maximum duration of each segment a segmented output
@@ -272,4 +269,17 @@ type EncodingSettings struct {
 	TransferMaximumRate  int32                   `json:"transfer_maximum_rate,omitempty"`  // A targeted rate in Kbps for data transfer maximums.
 	ExpectedMD5Checksum  string                  `json:"expected_md5_checksum,omitempty"`  // The expected checksum of the input file.
 	Credentials          string                  `json:"credentials,omitempty"`            // References saved credentials by a nickname.
+}
+
+type Skip struct {
+	MinSize         string `json:"min_size,omitempty"`     // Skip output if the input file is smaller than the given dimensions.
+	MaxSize         string `json:"max_size,omitempty"`     // Skip output if the input file is larger than the given dimensions.
+	MinDuration     int32  `json:"min_duration,omitempty"` // Skip output if the input file is shorter than the given duration, in seconds.
+	MaxDuration     int32  `json:"max_duration,omitempty"` // Skip output if the input file is longer than the given duration, in seconds.
+	MinAudioBitrate int32  `json:"min_audio_bitrate,omitempty"`
+	MaxAudioBitrate int32  `json:"max_audio_bitrate,omitempty"`
+	MinVideoBitrate int32  `json:"min_video_bitrate,omitempty"`
+	MaxVideoBitrate int32  `json:"max_video_bitrate,omitempty"`
+	RequireAudio    bool   `json:"require_audio,omitempty"`
+	RequireVideo    bool   `json:"require_video,omitempty"`
 }
