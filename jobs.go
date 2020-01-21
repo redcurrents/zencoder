@@ -4,6 +4,11 @@ import (
 	"fmt"
 )
 
+const (
+	UploadFailedError = "UploadFailedError"
+	UnknownError      = "UnknownError"
+)
+
 type FileProgress struct {
 	Id                   int64   `json:"id,omitempty"`
 	State                string  `json:"state,omitempty"`
@@ -54,13 +59,25 @@ type MediaFile struct {
 	Thumbnails         []*Thumbnail `json:"thumbnails,omitempty"`
 	MD5Checksum        string       `json:"md5_checksum,omitempty"`
 	Privacy            bool         `json:"privacy"`
-	ErrorMessage       *string      `json:"error_message,omitempty"`
-	ErrorClass         *string      `json:"error_class,omitempty"`
-	ErrorLink          *string      `json:"error_link,omitempty"`
 	CreatedAt          string       `json:"created_at,omitempty"`
 	FinishedAt         string       `json:"finished_at,omitempty"`
 	UpdatedAt          string       `json:"updated_at,omitempty"`
 	Test               bool         `json:"test,omitempty"`
+
+	// Errors
+	ErrorMessage              *string `json:"error_message,omitempty"`
+	ErrorClass                *string `json:"error_class,omitempty"`
+	ErrorLink                 *string `json:"error_link,omitempty"`
+	PrimaryUploadErrorMessage *string `json:"primary_upload_error_message,omitempty"`
+	PrimaryUploadErrorLink    *string `json:"primary_upload_error_link,omitempty"`
+}
+
+// MediaFileError
+type MediaFileError struct {
+	Id           int64   `json:"id,omitempty"`
+	ErrorMessage *string `json:"error_message,omitempty"`
+	ErrorClass   *string `json:"error_class,omitempty"`
+	ErrorLink    *string `json:"error_link,omitempty"`
 }
 
 type InputMediaFile struct {
@@ -108,6 +125,46 @@ type Job struct {
 // Job Details wrapper
 type JobDetails struct {
 	Job *Job `json:"job,omitempty"`
+}
+
+// Errors returns true if any errors where spotted, alongside with the errors
+func (m *MediaFile) Errors() (mediaFileErrors []*MediaFileError) {
+	hasGeneralErr := m.ErrorMessage != nil || m.ErrorClass != nil || m.ErrorLink != nil
+	hasUploadErr := m.PrimaryUploadErrorMessage != nil || m.PrimaryUploadErrorLink != nil
+
+	// General Errors (FileNotFoundError, etc...)
+	if hasGeneralErr {
+		mediaFileErrors = append(mediaFileErrors, &MediaFileError{
+			Id:           m.Id,
+			ErrorMessage: m.ErrorMessage,
+			ErrorClass:   m.ErrorClass,
+			ErrorLink:    m.ErrorLink,
+		})
+	}
+
+	// UploadFailedError
+	if hasUploadErr {
+		errClass := UploadFailedError
+		mediaFileErrors = append(mediaFileErrors, &MediaFileError{
+			Id:           m.Id,
+			ErrorMessage: m.PrimaryUploadErrorMessage,
+			ErrorClass:   &errClass,
+			ErrorLink:    m.PrimaryUploadErrorLink,
+		})
+	}
+
+	// Unknown error
+	if m.State == "failed" && !hasGeneralErr && !hasUploadErr {
+		errClass := UnknownError
+		errMsg := "Status failed, but the usual Zencoder error fields are empty"
+		mediaFileErrors = append(mediaFileErrors, &MediaFileError{
+			Id:           m.Id,
+			ErrorMessage: &errMsg,
+			ErrorClass:   &errClass,
+		})
+	}
+
+	return
 }
 
 // Create a Job
