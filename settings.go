@@ -180,6 +180,7 @@ type OutputSettings struct {
 	SegmentSeconds        int32             `json:"segment_seconds,omitempty"`          // Sets the maximum duration of each segment a segmented output
 	SegmentSize           int32             `json:"segment_size,omitempty"`             // Sets the maximum data size of each segment in a segmented output
 	Streams               []*StreamSettings `json:"streams,omitempty"`                  // Provides a list of stream info to be reformatted as a playlist
+	AllowSkippedSources   bool              `json:"allow_skipped_sources,omitempty"`    // instead of failing the output if any of the referenced streams have been skipped (as part of the conditional outputs functionality), just leave them out of the playlist
 	SegmentImageUrl       string            `json:"segment_image_url,omitempty"`        // An image to display on audio-only segments
 	SegmentVideoSnapshots bool              `json:"segment_video_snapshots,omitempty"`  // When segmenting a video file into audio-only segments, take snapshots of the video as thumbnails for each segment.
 	MaxHLSProtocolVersion int32             `json:"max_hls_protocol_version,omitempty"` // The maximum HLS protocol to use.
